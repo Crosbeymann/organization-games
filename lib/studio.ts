@@ -1,7 +1,7 @@
 export const studio = {
   name: 'Organization Games',
   designation:
-    'Official Regional Gaming Agencies Never Inventing Zero Association Tristate Inators Owning Neighborhoods Give All Mad Evil Spies fedora-hats.',
+    'Official Regional Gaming Agencies Never Inventing Zero Association Tristate Inators Owning Neighborhoods Give All Mad Evil Spies Fedora-hats.',
   description:
     'Organization Games is an independent game studio developing original games with distinct personalities, considered mechanics, and a willingness to take unusual ideas seriously.',
 }
