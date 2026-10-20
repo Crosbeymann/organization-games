@@ -1,0 +1,564 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-stamp: var(--stamp);
+  --color-rule: var(--rule);
+
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-muted: var(--paper-deep);
+  --color-muted-foreground: var(--graphite);
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--paper);
+  --color-accent: var(--stamp);
+  --color-accent-foreground: var(--paper);
+  --color-border: var(--rule);
+  --color-ring: var(--stamp);
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+}
+
+:root {
+  color-scheme: light;
+  --paper: #f3efe6;
+  --paper-deep: #e9e3d6;
+  --ink: #141311;
+  --graphite: #67625a;
+  --stamp: #b8321d;
+  --rule: #d4cdbf;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-press: cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 560ms;
+
+  --header-h: 60px;
+}
+
+.dark {
+  color-scheme: dark;
+  --paper: #121110;
+  --paper-deep: #1c1a17;
+  --ink: #ece6d8;
+  --graphite: #9a9387;
+  --stamp: #e2573c;
+  --rule: #34302a;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--stamp);
+    color: var(--paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--stamp);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@utility shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1320px;
+  padding-inline: 1.25rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 3rem;
+  }
+}
+
+@utility meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- Initial entrance ---------- */
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes line-up {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes rule-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes stamp-press {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--stamp-rotate, -7deg)) scale(1.35);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(var(--stamp-rotate, -7deg)) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--stamp-rotate, -7deg)) scale(1);
+  }
+}
+
+@keyframes joke-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.enter-nav {
+  animation: enter-fade 420ms var(--ease-out) both;
+}
+
+.enter {
+  animation: enter-rise var(--dur-slow) var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.enter-rule {
+  transform-origin: left;
+  animation: rule-grow 700ms var(--ease-in-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.line-mask > span {
+  display: block;
+  animation: line-up 600ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.stamp {
+  transform: rotate(var(--stamp-rotate, -7deg));
+}
+
+.enter-stamp {
+  animation: stamp-press 480ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* ---------- Scroll reveals (run once; only hidden when JS is available) ---------- */
+
+[data-reveal] {
+  transition:
+    opacity 560ms var(--ease-out),
+    transform 560ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js [data-reveal='left']:not([data-revealed]) {
+  transform: translateX(-18px);
+}
+
+[data-reveal='line'] {
+  transform-origin: left;
+  transition: transform 900ms var(--ease-in-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal='line']:not([data-revealed]) {
+  opacity: 1;
+  transform: scaleX(0);
+}
+
+.js [data-reveal='stamp']:not([data-revealed]) {
+  opacity: 0;
+  transform: rotate(var(--stamp-rotate, -7deg)) scale(1.3);
+}
+
+[data-reveal='stamp'] {
+  transform: rotate(var(--stamp-rotate, -7deg));
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 420ms var(--ease-press);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ---------- Links ---------- */
+
+.link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition:
+    background-size var(--dur-base) var(--ease-out),
+    color var(--dur-fast) ease;
+}
+
+.link-line:hover,
+.link-line:focus-visible,
+.link-line[aria-current] {
+  background-size: 100% 1px;
+}
+
+.text-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--rule);
+  transition:
+    text-decoration-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+
+.text-link:hover {
+  text-decoration-color: var(--stamp);
+  color: var(--stamp);
+}
+
+.arrow-shift {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.group:hover .arrow-shift,
+.group:focus-visible .arrow-shift {
+  transform: translateX(4px);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border: 1px solid var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  user-select: none;
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn-primary:hover {
+  background: var(--stamp);
+  border-color: var(--stamp);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.btn-secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- Accordion ---------- */
+
+.disclosure {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms var(--ease-in-out);
+}
+
+.disclosure[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+
+.disclosure > div {
+  overflow: hidden;
+}
+
+.disclosure-inner {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.disclosure[data-open='true'] .disclosure-inner {
+  opacity: 1;
+  transform: none;
+  transition-delay: 120ms;
+}
+
+/* ---------- Jokes ---------- */
+
+.joke-enter {
+  animation: joke-in 420ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* ---------- Pixel artwork ---------- */
+
+.scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.14) 0,
+    rgb(0 0 0 / 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* ---------- Theme switch (view transition circle reveal) ---------- */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ---------- Page transitions ---------- */
+
+@keyframes wipe-panel {
+  0%,
+  35% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes wipe-accent {
+  0% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes wipe-label {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  25%,
+  45% {
+    opacity: 1;
+    transform: none;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-wipe {
+  animation: enter-fade 1ms linear 900ms reverse both;
+}
+
+.page-wipe-panel {
+  transform-origin: top;
+  animation: wipe-panel 760ms var(--ease-in-out) both;
+}
+
+.page-wipe-accent {
+  transform-origin: top;
+  animation: wipe-accent 520ms var(--ease-in-out) both;
+}
+
+.page-wipe-label {
+  animation: wipe-label 700ms var(--ease-out) both;
+}
+
+.page-enter {
+  animation: page-in 700ms var(--ease-out) 260ms both;
+}
+
+/* ---------- Header tabs ---------- */
+
+.nav-tab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 360ms var(--ease-out);
+}
+
+.nav-tab:not([aria-current]):hover::before {
+  transform: scaleY(0.08);
+}
+
+.nav-tab[aria-current]::before {
+  transform: scaleY(1);
+}
+
+@keyframes doc-flip {
+  from {
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.doc-flip {
+  animation: doc-flip 520ms var(--ease-out) 300ms both;
+}
+
+/* ---------- Directory sweep ---------- */
+
+.sweep::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 520ms var(--ease-out);
+}
+
+.sweep:hover::before,
+.sweep:focus-visible::before {
+  transform: scaleY(1);
+}
+
+/* ---------- Ticker ---------- */
+
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  animation: ticker 38s linear infinite;
+}
+
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .js [data-reveal]:not([data-revealed]) {
+    opacity: 1;
+    transform: none;
+  }
+  .js [data-reveal='stamp']:not([data-revealed]) {
+    transform: rotate(var(--stamp-rotate, -7deg));
+  }
+}
