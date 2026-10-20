@@ -4,19 +4,33 @@ import { useId, useState } from 'react'
 import { studio } from '@/lib/studio'
 import { cn } from '@/lib/utils'
 
+
 function Initialed({ text }: { text: string }) {
+  const words = text.split(' ')
+
   return (
     <>
-      {text.split(' ').map((word, index) => (
-        <span key={index}>
-          {index > 0 && ' '}
-          <span className="text-stamp">{word[0]}</span>
-          {word.slice(1)}
-        </span>
-      ))}
+      {words.map((word, index) => {
+        const isSurplusF = word === 'Fedora-hats'
+
+        return (
+          <span key={index}>
+            {index > 0 && ' '}
+            {isSurplusF ? (
+              word
+            ) : (
+              <>
+                <span className="text-stamp">{word[0]}</span>
+                {word.slice(1)}
+              </>
+            )}
+          </span>
+        )
+      })}
     </>
   )
 }
+
 
 export function DesignationRecord() {
   const [open, setOpen] = useState(false)
